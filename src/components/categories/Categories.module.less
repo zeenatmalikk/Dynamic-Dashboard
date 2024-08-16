@@ -1,0 +1,28 @@
+@import url("../shared/widgetCard/WidgetCard.module.less");
+.categoryContainer {
+  margin: 1rem 0;
+  .categoryName {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .widgets {
+    display: flex;
+    align-items: center;
+    .addWidgetCard {
+      .widgetCard();
+      .cardContent {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        .noWidget {
+          background-color: inherit;
+          color: #3b495d;
+          border: 1px solid #c0cddb;;
+          text-transform: capitalize;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

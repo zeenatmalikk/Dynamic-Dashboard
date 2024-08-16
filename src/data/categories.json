@@ -1,0 +1,72 @@
+[
+  {
+    "id": "c1",
+    "title": "CSPM",
+    "name": "CSPM Executive Dashboard",
+    "widgets": [
+      {
+        "id": "w1",
+        "type": "cspm",
+        "name": "Cloud Accounts",
+        "text": "Random text for Widget 1",
+        "visible": true
+      },
+      {
+        "id": "w2",
+        "type": "cspm",
+
+        "name": "Cloud Account Risk",
+        "text": "Random text for Widget 2",
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "title": "CWPP",
+
+    "name": "CWPP Dashboard",
+    "widgets": [
+      {
+        "id": "w3",
+        "type": "cwpp",
+
+        "name": "Widget 3",
+        "text": "Random text for Widget 3",
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "title": "Image",
+
+    "name": "Registry Scan",
+
+    "widgets": [
+      {
+        "id": "w3",
+        "type": "registry",
+        "name": "Widget 3",
+        "text": "Random text for Widget 3",
+        "visible": true
+      }
+    ]
+  },
+  {
+    "id": "c2",
+    "title": "Ticket",
+
+    "name": "Tickets",
+
+    "widgets": [
+      {
+        "id": "w3",
+        "type": "registry",
+        "name": "Widget 3",
+        "text": "Random text for Widget 3",
+        "visible": true
+      }
+    ]
+  }
+]
