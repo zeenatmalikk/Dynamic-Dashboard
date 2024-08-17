@@ -3,4 +3,28 @@
   border-radius: 1rem !important;
   height: 250px;
   margin: 0.5rem 0 0;
+  position: relative;
+  .cardContent {
+    .noChartContainer{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 200px; /* or adjust to your needs */
+      text-align: center;
+    }
+    .remove {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.7rem;
+      cursor: pointer;
+      color: red;
+    }
+    .widgetName{
+      font-weight: 600;
+    }
+    .widgetDesc{
+      font-weight: 400;
+    }
+  }
 }

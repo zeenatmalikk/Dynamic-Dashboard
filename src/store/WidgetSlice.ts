@@ -12,23 +12,44 @@ const initialState: WidgetState = {
       title: "CSPM",
       name: "CSPM Executive Dashboard",
       widgets: [
-        { id: "1", name: "Cloud Accounts", text: "", visible: true },
+        {
+          id: "1",
+          name: "Cloud Accounts",
+          text: "Overview of cloud accounts with usage distribution.",
+          visible: true,
+          type: "chart",
+          chartType: "pie",
+          chartData: [
+            { name: "AWS", value: 50 },
+            { name: "Azure", value: 30 },
+            { name: "Google Cloud", value: 15 },
+            { name: "Others", value: 5 },
+          ],
+        },
         {
           id: "2",
           name: "Cloud Account Risk Assessment",
-          text: "",
+          text: "Dashboard for detecting potential threats.",
           visible: false,
+          type: "chart",
+          chartType: "pie",
+          chartData: [
+            { name: "Low Risk", value: 40 },
+            { name: "Medium Risk", value: 30 },
+            { name: "High Risk", value: 20 },
+            { name: "Critical Risk", value: 10 },
+          ],
         },
         {
           id: "3",
           name: "Cloud Resource Inventory",
-          text: "",
+          text: "Inventory of cloud resources and their usage.",
           visible: false,
         },
         {
           id: "4",
           name: "Policy Violation Summary",
-          text: "",
+          text: "Summary of policy violations across cloud resources.",
           visible: false,
         },
       ],
@@ -41,25 +62,25 @@ const initialState: WidgetState = {
         {
           id: "1",
           name: "Workload Security Overview",
-          text: "",
+          text: "Overview of security measures for workloads.",
           visible: true,
         },
         {
           id: "2",
           name: "Threat Detection Dashboard",
-          text: "",
+          text: "Dashboard for detecting potential threats.",
           visible: false,
         },
         {
           id: "3",
           name: "Container Security Insights",
-          text: "",
+          text: "Insights into the security of containers.",
           visible: false,
         },
         {
           id: "4",
           name: "Real-Time Incident Monitoring",
-          text: "",
+          text: "Monitoring of incidents in real-time.",
           visible: false,
         },
       ],
@@ -72,25 +93,25 @@ const initialState: WidgetState = {
         {
           id: "1",
           name: "Registry Compliance Check",
-          text: "",
+          text: "Checks for compliance in registry scans.",
           visible: true,
         },
         {
           id: "2",
           name: "Container Image Security",
-          text: "",
+          text: "Security overview of container images.",
           visible: false,
         },
         {
           id: "3",
           name: "Vulnerability Scan Overview",
-          text: "",
+          text: "Overview of vulnerabilities found in scans.",
           visible: false,
         },
         {
           id: "4",
           name: "Image Vulnerability Report",
-          text: "",
+          text: "Detailed report of vulnerabilities in images.",
           visible: false,
         },
       ],
@@ -103,25 +124,25 @@ const initialState: WidgetState = {
         {
           id: "1",
           name: "High-Priority Tickets",
-          text: "",
+          text: "List of tickets that are high priority.",
           visible: true,
         },
         {
           id: "2",
           name: "Ticket Resolution Time",
-          text: "",
+          text: "Analysis of time taken to resolve tickets.",
           visible: false,
         },
         {
           id: "3",
           name: "Assigned Tickets Summary",
-          text: "",
+          text: "Summary of tickets assigned to users.",
           visible: false,
         },
         {
           id: "4",
           name: "Escalated Tickets",
-          text: "",
+          text: "List of tickets that have been escalated",
           visible: false,
         },
       ],
@@ -159,8 +180,21 @@ const widgetSlice = createSlice({
         }
       }
     },
+    removeWidget: (
+      state,
+      action: PayloadAction<{ categoryId: string; widgetId: string }>
+    ) => {
+      const { categoryId, widgetId } = action.payload;
+      const category = state.categories.find((cat) => cat.id === categoryId);
+      if (category) {
+        category.widgets = category.widgets.filter(
+          (widget) => widget.id !== widgetId
+        );
+      }
+    },
   },
 });
 
-export const { addWidget, toggleWidgetVisibility } = widgetSlice.actions;
+export const { addWidget, toggleWidgetVisibility, removeWidget } =
+  widgetSlice.actions;
 export default widgetSlice.reducer;

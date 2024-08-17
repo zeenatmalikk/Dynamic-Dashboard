@@ -3,12 +3,15 @@ import WidgetCard from "../shared/widgetCard/WidgetCard";
 import { Category } from "../../types/types";
 import styles from "./Categories.module.less";
 
+
 type Props = {
   category: Category;
   onAddWidget: () => void;
 };
 
 const Categories = ({ category, onAddWidget }: Props) => {
+ console.log(category,'categ');
+ 
   return (
     <div className={styles.categoryContainer}>
       <Typography className={styles.categoryName}>{category.name}</Typography>
@@ -16,7 +19,7 @@ const Categories = ({ category, onAddWidget }: Props) => {
         {category.widgets.map((widget) =>
           widget.visible ? (
             <Grid item key={widget.id} md={4} xs={12} sm={6} px={1}>
-              <WidgetCard widget={widget} />
+              <WidgetCard widget={widget} categoryId={category.id} />
             </Grid>
           ) : null
         )}
