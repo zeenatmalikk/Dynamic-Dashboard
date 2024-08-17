@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { Widgets } from "../../../types/types";
 import styles from "./WidgetCard.module.less";
-import { Close } from "@mui/icons-material";
+import { Cancel, Close } from "@mui/icons-material";
 import { removeWidget } from "../../../store/WidgetSlice";
 import { useDispatch } from "react-redux";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -32,7 +32,7 @@ const WidgetCard = (props: Props) => {
   return (
     <Card className={styles.widgetCard} variant="outlined">
       <CardContent className={styles.cardContent}>
-        <Close
+        <Cancel
           className={styles.remove}
           onClick={() => handleRemoveWidget(categoryId, widget.id)}
         />

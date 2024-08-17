@@ -7,7 +7,12 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import styles from "./Layout.module.less";
 import { InputAdornment, TextField } from "@mui/material";
-import { ChevronRight, Search } from "@mui/icons-material";
+import {
+  AccountCircle,
+  ChevronRight,
+  Notifications,
+  Search,
+} from "@mui/icons-material";
 interface Props {
   children: React.ReactNode;
   window?: () => Window;
@@ -16,7 +21,7 @@ interface Props {
 }
 
 export default function Layout(props: Props) {
-  const { children,handleSearch } = props;
+  const { children, handleSearch } = props;
 
   return (
     <div className={styles.layout}>
@@ -56,6 +61,8 @@ export default function Layout(props: Props) {
               />
             </div>
           </Box>
+            <Notifications />
+            <AccountCircle />
         </Toolbar>
       </AppBar>
 

@@ -1,6 +1,6 @@
 import { Button, Typography } from "@mui/material";
 import styles from "./Dashboard.module.less";
-import { Loop, MoreVert } from "@mui/icons-material";
+import { AccessTime, Loop, MoreVert } from "@mui/icons-material";
 import Categories from "../../components/categories/Categories";
 import { useState } from "react";
 import WidgetDrawer from "../../components/drawer/WidgetDrawer";
@@ -54,6 +54,10 @@ const Dashboard = ({ searchQuery }: Props) => {
           </Button>
           <Button className={styles.iconBtn}>
             <MoreVert />
+          </Button>
+          <Button className={styles.iconBtn}>
+            <AccessTime/>
+            Last 2 days
           </Button>
         </div>
       </header>
