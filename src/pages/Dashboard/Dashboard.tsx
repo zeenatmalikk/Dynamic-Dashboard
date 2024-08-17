@@ -6,9 +6,13 @@ import { useState } from "react";
 import WidgetDrawer from "../../components/drawer/WidgetDrawer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-const Dashboard = () => {
+type Props = {
+  searchQuery: string; // Add searchQuery prop
+};
+const Dashboard = ({ searchQuery }: Props) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerCategoryIndex, setDrawerCategoryIndex] = useState(0);
+
   const handleAddWidget = (categoryIndex: number) => {
     setDrawerCategoryIndex(categoryIndex);
     setOpenDrawer(true);
@@ -20,7 +24,19 @@ const Dashboard = () => {
   const categories = useSelector(
     (state: RootState) => state.widgets.categories
   );
-
+  const filteredCategories = categories.filter((category) => {
+    if (searchQuery) {
+      // Show category if it has at least one visible widget matching the search query
+      return category.widgets.some(
+        (widget) =>
+          widget.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+          widget.visible
+      );
+    } else {
+      // Show category regardless of widget visibility if no search query
+      return true;
+    }
+  });
   return (
     <div className={styles.dashboard}>
       <header className={styles.headerContainer}>
@@ -41,13 +57,20 @@ const Dashboard = () => {
           </Button>
         </div>
       </header>
-      {categories.map((category, index) => (
-        <Categories
-          key={category.id}
-          category={category}
-          onAddWidget={() => handleAddWidget(index)}
-        />
-      ))}
+      {filteredCategories.length > 0 ? (
+        filteredCategories.map((category, index) => (
+          <Categories
+            key={category.id}
+            category={category}
+            onAddWidget={() => handleAddWidget(index)}
+            searchQuery={searchQuery}
+          />
+        ))
+      ) : (
+        <Typography className={styles.noWidgetFound}>
+          No widgets found for the given search query.
+        </Typography>
+      )}
 
       <WidgetDrawer
         openDrawer={openDrawer}

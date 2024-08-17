@@ -11,10 +11,12 @@ import { ChevronRight, Search } from "@mui/icons-material";
 interface Props {
   children: React.ReactNode;
   window?: () => Window;
+  handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  searchQuery: string;
 }
 
 export default function Layout(props: Props) {
-  const { children } = props;
+  const { children,handleSearch } = props;
 
   return (
     <div className={styles.layout}>
@@ -39,6 +41,7 @@ export default function Layout(props: Props) {
                 variant="outlined"
                 placeholder="Search anything..."
                 className={styles.searchField}
+                onChange={handleSearch}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
