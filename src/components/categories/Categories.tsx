@@ -3,15 +3,19 @@ import WidgetCard from "../shared/widgetCard/WidgetCard";
 import { Category } from "../../types/types";
 import styles from "./Categories.module.less";
 
-
 type Props = {
   category: Category;
   onAddWidget: () => void;
 };
 
 const Categories = ({ category, onAddWidget }: Props) => {
- console.log(category,'categ');
- 
+  console.log(category, "categ");
+  // const filteredWidgets = category.widgets.filter(
+  //   (widget) =>
+  //     widget.visible &&
+  //     widget.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
+
   return (
     <div className={styles.categoryContainer}>
       <Typography className={styles.categoryName}>{category.name}</Typography>
@@ -26,9 +30,12 @@ const Categories = ({ category, onAddWidget }: Props) => {
         <Grid item md={4} xs={12} sm={6} px={1}>
           <Card className={styles.addWidgetCard} variant="outlined">
             <CardContent className={styles.cardContent}>
-            
-              <Button onClick={onAddWidget} variant="outlined" className={styles.noWidget}>
-               + Add Widget
+              <Button
+                onClick={onAddWidget}
+                variant="outlined"
+                className={styles.noWidget}
+              >
+                + Add Widget
               </Button>
             </CardContent>
           </Card>
