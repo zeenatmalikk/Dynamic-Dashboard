@@ -10,7 +10,7 @@ type Props = {
   searchQuery: string; // Add searchQuery prop
 };
 const Dashboard = ({ searchQuery }: Props) => {
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(true);
   const [drawerCategoryIndex, setDrawerCategoryIndex] = useState(0);
 
   const handleAddWidget = (categoryIndex: number) => {
@@ -63,7 +63,6 @@ const Dashboard = ({ searchQuery }: Props) => {
             key={category.id}
             category={category}
             onAddWidget={() => handleAddWidget(index)}
-            searchQuery={searchQuery}
           />
         ))
       ) : (

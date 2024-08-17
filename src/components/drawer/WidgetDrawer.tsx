@@ -58,6 +58,7 @@ const WidgetDrawer = (props: Props) => {
         dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
       }
     });
+    handleCloseDrawer();
   };
   useEffect(() => {
     const initialSelectedWidgets: { [key: string]: boolean } = {};
@@ -119,13 +120,24 @@ const WidgetDrawer = (props: Props) => {
             ))}
           </List>
         </Box>
-        <Button
-          variant="contained"
-          onClick={() => handleConfirmVisibility(categories[value].id)}
-          sx={{ marginTop: 2 }}
-        >
-          Confirm
-        </Button>
+        <div className={styles.btnGroup}>
+          <Button
+            variant="outlined"
+            className={styles.close}
+            onClick={handleCloseDrawer}
+            sx={{ marginTop: 2 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            className={styles.confirm}
+            onClick={() => handleConfirmVisibility(categories[value].id)}
+            sx={{ marginTop: 2 }}
+          >
+            Confirm
+          </Button>
+        </div>
       </div>
     </Drawer>
   );
