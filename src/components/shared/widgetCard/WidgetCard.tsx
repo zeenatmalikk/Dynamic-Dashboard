@@ -69,7 +69,7 @@ const WidgetCard = (props: Props) => {
                 verticalAlign="middle"
                 align="right"
                 layout="vertical"
-                iconType="circle"
+                iconType={'rect'}
                 formatter={renderLegendText}
               />
             </PieChart>

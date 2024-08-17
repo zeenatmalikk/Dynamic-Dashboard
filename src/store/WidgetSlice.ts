@@ -187,9 +187,10 @@ const widgetSlice = createSlice({
       const { categoryId, widgetId } = action.payload;
       const category = state.categories.find((cat) => cat.id === categoryId);
       if (category) {
-        category.widgets = category.widgets.filter(
-          (widget) => widget.id !== widgetId
-        );
+        const widget = category.widgets.find((w) => w.id === widgetId);
+        if (widget) {
+          widget.visible = false;
+        }
       }
     },
   },

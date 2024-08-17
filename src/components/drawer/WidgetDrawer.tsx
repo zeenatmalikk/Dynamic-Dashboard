@@ -4,7 +4,6 @@ import {
   Tab,
   Tabs,
   Typography,
-  TextField,
   Button,
   List,
   ListItem,
@@ -15,9 +14,8 @@ import styles from "./WidgetDrawer.module.less";
 import { Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store/store"; // Adjust the import according to your project structure
-import { addWidget, toggleWidgetVisibility } from "../../store/WidgetSlice"; // Adjust the import according to your project structure
-import { Category, Widgets } from "../../types/types";
+import { RootState } from "../../store/store";
+import { toggleWidgetVisibility } from "../../store/WidgetSlice";
 type Props = {
   openDrawer: boolean;
   handleCloseDrawer: () => void;
@@ -26,12 +24,21 @@ type Props = {
 const WidgetDrawer = (props: Props) => {
   const { openDrawer, handleCloseDrawer, drawerCategoryIndex } = props;
   const [value, setValue] = useState(0);
-  const [widgetName, setWidgetName] = useState("");
-  const [widgetText, setWidgetText] = useState("");
+  const [selectedWidgets, setSelectedWidgets] = useState<{
+    [key: string]: boolean;
+  }>({});
+
   const dispatch = useDispatch();
   const categories = useSelector(
     (state: RootState) => state.widgets.categories
   );
+  const handleCheckboxChange = (widgetId: string, checked: boolean) => {
+    setSelectedWidgets((prevSelectedWidgets) => ({
+      ...prevSelectedWidgets,
+      [widgetId]: checked,
+    }));
+  };
+
   useEffect(() => {
     setValue(drawerCategoryIndex);
   }, [drawerCategoryIndex]);
@@ -40,24 +47,25 @@ const WidgetDrawer = (props: Props) => {
     setValue(newValue);
   };
 
-  // const handleAddWidget = () => {
-  //   const newWidget: Widgets = {
-  //     id: `w${Date.now()}`, // Unique ID for the widget
-  //     name: widgetName,
-  //     text: widgetText,
-  //     type: categories[value].title.toLowerCase(),
-  //     visible: true, // Add a visibility flag
-  //   };
-  //   dispatch(
-  //     addWidget({ categoryId: categories[value].id, widget: newWidget })
-  //   );
-  //   setWidgetName("");
-  //   setWidgetText("");
-  // };
+  const handleConfirmVisibility = (categoryId: string) => {
+    Object.keys(selectedWidgets).forEach((widgetId) => {
+      const widgetVisible = selectedWidgets[widgetId];
+      const currentWidget = categories[value].widgets.find(
+        (w) => w.id === widgetId
+      );
 
-  const handleToggleVisibility = (categoryId: string, widgetId: string) => {
-    dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
+      if (currentWidget && currentWidget.visible !== widgetVisible) {
+        dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
+      }
+    });
   };
+  useEffect(() => {
+    const initialSelectedWidgets: { [key: string]: boolean } = {};
+    categories[value].widgets.forEach((widget) => {
+      initialSelectedWidgets[widget.id] = widget.visible;
+    });
+    setSelectedWidgets(initialSelectedWidgets);
+  }, [value, categories]);
 
   return (
     <Drawer anchor={"right"} open={openDrawer} onClose={handleCloseDrawer}>
@@ -87,51 +95,37 @@ const WidgetDrawer = (props: Props) => {
               ))}
             </Tabs>
           </div>
-          {/* <div className={styles.tabContent}>
-          <TextField
-            label="Widget Title"
-            value={widgetName}
-            onChange={(e) => setWidgetName(e.target.value)}
-            fullWidth
-          />
-          <TextField
-            label="Widget Text"
-            value={widgetText}
-            onChange={(e) => setWidgetText(e.target.value)}
-            fullWidth
-            multiline
-            rows={4}
-            sx={{ marginTop: 2 }}
-          />
-          <Button variant="contained" onClick={handleAddWidget} sx={{ marginTop: 2 }}>
-            Add Widget
-          </Button>
-        </div> */}
-          {/* <Typography variant="h6">Existing Widgets</Typography> */}
           <List className={styles.widgetList}>
             {categories[value].widgets.map((widget) => (
-               <ListItem key={widget.id} className={styles.widgetItem}>
-               <ListItemButton
-               className={styles.widgetBtn}
-               disableTouchRipple
-               disableRipple
-               disableGutters
-                 onClick={() =>
-                   handleToggleVisibility(categories[value].id, widget.id)
-                 }
-               >
-                 <Checkbox
-                   checked={widget.visible}
-                   onChange={() =>
-                     handleToggleVisibility(categories[value].id, widget.id)
-                   }
-                 />
-                 <Typography>{widget.name}</Typography>
-               </ListItemButton>
-             </ListItem>
+              <ListItem key={widget.id} className={styles.widgetItem}>
+                <ListItemButton
+                  className={styles.widgetBtn}
+                  disableTouchRipple
+                  disableRipple
+                  disableGutters
+                  onClick={() =>
+                    handleCheckboxChange(widget.id, !selectedWidgets[widget.id])
+                  }
+                >
+                  <Checkbox
+                    checked={selectedWidgets[widget.id] || false}
+                    onChange={(e) =>
+                      handleCheckboxChange(widget.id, e.target.checked)
+                    }
+                  />
+                  <Typography>{widget.name}</Typography>
+                </ListItemButton>
+              </ListItem>
             ))}
           </List>
         </Box>
+        <Button
+          variant="contained"
+          onClick={() => handleConfirmVisibility(categories[value].id)}
+          sx={{ marginTop: 2 }}
+        >
+          Confirm
+        </Button>
       </div>
     </Drawer>
   );
