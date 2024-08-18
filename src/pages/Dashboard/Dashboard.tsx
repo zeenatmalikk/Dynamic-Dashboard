@@ -18,7 +18,7 @@ const Dashboard = ({ searchQuery }: Props) => {
   const categories = useSelector(
     (state: RootState) => state.widgets.categories
   );
-  const [openDrawer, setOpenDrawer] = useState(true);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [drawerCategoryIndex, setDrawerCategoryIndex] = useState(0);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
