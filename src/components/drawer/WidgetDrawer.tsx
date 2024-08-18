@@ -88,8 +88,8 @@ const WidgetDrawer = (props: Props) => {
   // initialize the selectedWidgets state when the tab  changes
 
   useEffect(() => {
-    const currentCategoryId = categories[value].id;
-    if (!selectedWidgets[currentCategoryId]) {
+    if (openDrawer) {
+      const currentCategoryId = categories[value].id;
       const initialSelectedWidgets: { [key: string]: boolean } = {};
       categories[value].widgets.forEach((widget) => {
         initialSelectedWidgets[widget.id] = widget.visible;
@@ -99,7 +99,7 @@ const WidgetDrawer = (props: Props) => {
         [currentCategoryId]: initialSelectedWidgets,
       }));
     }
-  }, [value, categories]);
+  }, [openDrawer, value, categories]);
 
   return (
     <Drawer anchor={"right"} open={openDrawer} onClose={handleCloseDrawer}>
