@@ -10,7 +10,7 @@ function App() {
   };
   return (
     <div>
-      <Layout handleSearch={handleSearchChange} searchQuery={searchQuery}>
+      <Layout setSearchQuery={setSearchQuery} handleSearch={handleSearchChange} searchQuery={searchQuery}>
         <Dashboard searchQuery={searchQuery}/>
       </Layout>
     </div>

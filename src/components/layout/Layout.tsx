@@ -2,27 +2,30 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import styles from "./Layout.module.less";
-import { InputAdornment, TextField } from "@mui/material";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import {
   AccountCircle,
   ChevronRight,
+  Clear,
   Notifications,
   Search,
 } from "@mui/icons-material";
+
 interface Props {
   children: React.ReactNode;
-  window?: () => Window;
   handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
   searchQuery: string;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function Layout(props: Props) {
-  const { children, handleSearch } = props;
-
+  const { children, handleSearch, searchQuery, setSearchQuery } = props;
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
   return (
     <div className={styles.layout}>
       <CssBaseline />
@@ -41,6 +44,7 @@ export default function Layout(props: Props) {
             Dashboard V2
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            {/* searchField to search for widgets */}
             <div className={styles.searchContainer}>
               <TextField
                 variant="outlined"
@@ -53,6 +57,13 @@ export default function Layout(props: Props) {
                       <Search />
                     </InputAdornment>
                   ),
+                  endAdornment: searchQuery ? (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClearSearch} edge="end">
+                        <Clear />
+                      </IconButton>
+                    </InputAdornment>
+                  ) : null,
                   sx: {
                     padding: "0 10px",
                     height: "32px",
@@ -61,11 +72,11 @@ export default function Layout(props: Props) {
               />
             </div>
           </Box>
-            <Notifications />
-            <AccountCircle />
+          <Notifications />
+          <AccountCircle />
         </Toolbar>
       </AppBar>
-
+      {/* render dashboard */}
       <Box component="main" className={styles.children}>
         <Toolbar />
         {children}
