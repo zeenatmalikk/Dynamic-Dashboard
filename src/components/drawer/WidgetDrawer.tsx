@@ -16,25 +16,23 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { toggleWidgetVisibility } from "../../store/WidgetSlice";
+
 type Props = {
   openDrawer: boolean;
   handleCloseDrawer: () => void;
   drawerCategoryIndex: number;
 };
+
 const WidgetDrawer = (props: Props) => {
   const dispatch = useDispatch();
   const categories = useSelector(
     (state: RootState) => state.widgets.categories
   );
   const { openDrawer, handleCloseDrawer, drawerCategoryIndex } = props;
-  // state to track the currently selected tab (category)
   const [value, setValue] = useState(0);
-  // state to track selected widgets for each category
   const [selectedWidgets, setSelectedWidgets] = useState<{
     [categoryId: string]: { [widgetId: string]: boolean };
   }>({});
-
-  // handles the checkbox change for selecting/unselecting widgets
 
   const handleCheckboxChange = (
     categoryId: string,
@@ -49,20 +47,19 @@ const WidgetDrawer = (props: Props) => {
       },
     }));
   };
-  // sets the current tab based on the drawerCategoryIndex prop
+
   useEffect(() => {
     setValue(drawerCategoryIndex);
   }, [drawerCategoryIndex]);
 
-  // handles the change of tabs
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  // confirms the visibility of selected widgets and updates the Redux state
+
   const handleConfirmVisibility = () => {
     categories.forEach((category) => {
       const categoryId = category.id;
-      const updatedWidgets = { ...selectedWidgets[categoryId] };
+      const updatedWidgets = selectedWidgets[categoryId] || {};
 
       Object.keys(updatedWidgets).forEach((widgetId) => {
         const widgetVisible = updatedWidgets[widgetId];
@@ -71,35 +68,44 @@ const WidgetDrawer = (props: Props) => {
         if (currentWidget && currentWidget.visible !== widgetVisible) {
           dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
         }
-
-        updatedWidgets[widgetId] = currentWidget
-          ? currentWidget.visible
-          : false;
       });
-
-      setSelectedWidgets((prevSelectedWidgets) => ({
-        ...prevSelectedWidgets,
-        [categoryId]: updatedWidgets,
-      }));
     });
 
     handleCloseDrawer();
   };
-  // initialize the selectedWidgets state when the tab  changes
+
+  const handleCancel = () => {
+    // Reset selectedWidgets state to reflect the visibility in Redux
+    const initialSelectedWidgets: { [categoryId: string]: { [widgetId: string]: boolean } } = {};
+
+    categories.forEach((category) => {
+      const categoryId = category.id;
+      const widgetsVisibility: { [widgetId: string]: boolean } = {};
+      category.widgets.forEach((widget) => {
+        widgetsVisibility[widget.id] = widget.visible;
+      });
+      initialSelectedWidgets[categoryId] = widgetsVisibility;
+    });
+
+    setSelectedWidgets(initialSelectedWidgets);
+    handleCloseDrawer();
+  };
 
   useEffect(() => {
-    const currentCategoryId = categories[value].id;
-    if (!selectedWidgets[currentCategoryId]) {
-      const initialSelectedWidgets: { [key: string]: boolean } = {};
-      categories[value].widgets.forEach((widget) => {
-        initialSelectedWidgets[widget.id] = widget.visible;
-      });
-      setSelectedWidgets((prevSelectedWidgets) => ({
-        ...prevSelectedWidgets,
-        [currentCategoryId]: initialSelectedWidgets,
-      }));
+    if (openDrawer) {
+      const currentCategoryId = categories[value].id;
+      if (!selectedWidgets[currentCategoryId]) {
+        const initialSelectedWidgets: { [key: string]: boolean } = {};
+        categories[value].widgets.forEach((widget) => {
+          initialSelectedWidgets[widget.id] = widget.visible;
+        });
+        setSelectedWidgets((prevSelectedWidgets) => ({
+          ...prevSelectedWidgets,
+          [currentCategoryId]: initialSelectedWidgets,
+        }));
+      }
     }
-  }, [value, categories]);
+  }, [openDrawer, value, categories, selectedWidgets]);
 
   return (
     <Drawer anchor={"right"} open={openDrawer} onClose={handleCloseDrawer}>
@@ -119,8 +125,6 @@ const WidgetDrawer = (props: Props) => {
               onChange={handleChange}
               aria-label="widget categories"
             >
-              {/* Render tabs for each category */}
-
               {categories.map((category, index) => (
                 <Tab
                   className={styles.categoryLabel}
@@ -149,8 +153,7 @@ const WidgetDrawer = (props: Props) => {
                 >
                   <Checkbox
                     checked={
-                      selectedWidgets[categories[value].id]?.[widget.id] ||
-                      false
+                      selectedWidgets[categories[value].id]?.[widget.id] || false
                     }
                     onChange={(e) =>
                       handleCheckboxChange(
@@ -167,18 +170,14 @@ const WidgetDrawer = (props: Props) => {
           </List>
         </Box>
         <div className={styles.btnGroup}>
-          {/* cancel button to close the drawer without saving changes */}
-
           <Button
             variant="outlined"
             className={styles.close}
-            onClick={handleCloseDrawer}
+            onClick={handleCancel}
             sx={{ marginTop: 2 }}
           >
             Cancel
           </Button>
-          {/* confirm button to save the selected widgets and close the drawer */}
-
           <Button
             variant="contained"
             className={styles.confirm}
