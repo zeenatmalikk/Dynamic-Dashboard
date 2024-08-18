@@ -13,18 +13,24 @@ type Props = {
 const WidgetCard = (props: Props) => {
   const { widget, categoryId } = props;
   console.log(widget, "widget");
-
+  // colors used for the segments in the pie chart
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
   const dispatch = useDispatch();
+  // function to handle the removal of a widget
   const handleRemoveWidget = (categoryId: string, widgetId: string) => {
+    // dispatches an action to remove the widget from the specified category
     dispatch(removeWidget({ categoryId, widgetId }));
   };
+
+  // function to format the text in the pie chart legend
 
   const renderLegendText = (
     name: string,
     entry: { payload?: { value?: number } }
   ) => {
+    // displays the name of the data along with its value (defaults to 0 if not available)
+
     const value = entry.payload?.value;
     return `${name} (${value !== undefined ? value : 0})`;
   };
@@ -32,6 +38,8 @@ const WidgetCard = (props: Props) => {
   return (
     <Card className={styles.widgetCard} variant="outlined">
       <CardContent className={styles.cardContent}>
+        {/* button to remove the widget */}
+
         <Cancel
           className={styles.remove}
           onClick={() => handleRemoveWidget(categoryId, widget.id)}
@@ -46,6 +54,8 @@ const WidgetCard = (props: Props) => {
           <Typography variant="body1" className={styles.widgetName}>
             {widget.name}
           </Typography>
+          {/* if the widget is not a chart, display a placeholder message */}
+
           {widget.type !== "chart" && (
             <div className={styles.descContainer}>
               <BarChart className={styles.barChart} />
@@ -77,6 +87,8 @@ const WidgetCard = (props: Props) => {
                   />
                 ))}
               </Pie>
+              {/* legend to display the names and values of each pie segment */}
+
               <Legend
                 verticalAlign="middle"
                 align="right"

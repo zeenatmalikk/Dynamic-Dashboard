@@ -27,47 +27,78 @@ const WidgetDrawer = (props: Props) => {
     (state: RootState) => state.widgets.categories
   );
   const { openDrawer, handleCloseDrawer, drawerCategoryIndex } = props;
+  // state to track the currently selected tab (category)
   const [value, setValue] = useState(0);
+  // state to track selected widgets for each category
   const [selectedWidgets, setSelectedWidgets] = useState<{
-    [key: string]: boolean;
+    [categoryId: string]: { [widgetId: string]: boolean };
   }>({});
 
+  // handles the checkbox change for selecting/unselecting widgets
 
-  const handleCheckboxChange = (widgetId: string, checked: boolean) => {
+  const handleCheckboxChange = (
+    categoryId: string,
+    widgetId: string,
+    checked: boolean
+  ) => {
     setSelectedWidgets((prevSelectedWidgets) => ({
       ...prevSelectedWidgets,
-      [widgetId]: checked,
+      [categoryId]: {
+        ...prevSelectedWidgets[categoryId],
+        [widgetId]: checked,
+      },
     }));
   };
-
+  // sets the current tab based on the drawerCategoryIndex prop
   useEffect(() => {
     setValue(drawerCategoryIndex);
   }, [drawerCategoryIndex]);
 
+  // handles the change of tabs
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  // confirms the visibility of selected widgets and updates the Redux state
+  const handleConfirmVisibility = () => {
+    categories.forEach((category) => {
+      const categoryId = category.id;
+      const updatedWidgets = { ...selectedWidgets[categoryId] };
 
-  const handleConfirmVisibility = (categoryId: string) => {
-    Object.keys(selectedWidgets).forEach((widgetId) => {
-      const widgetVisible = selectedWidgets[widgetId];
-      const currentWidget = categories[value].widgets.find(
-        (w) => w.id === widgetId
-      );
+      Object.keys(updatedWidgets).forEach((widgetId) => {
+        const widgetVisible = updatedWidgets[widgetId];
+        const currentWidget = category.widgets.find((w) => w.id === widgetId);
 
-      if (currentWidget && currentWidget.visible !== widgetVisible) {
-        dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
-      }
+        if (currentWidget && currentWidget.visible !== widgetVisible) {
+          dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
+        }
+
+        updatedWidgets[widgetId] = currentWidget
+          ? currentWidget.visible
+          : false;
+      });
+
+      setSelectedWidgets((prevSelectedWidgets) => ({
+        ...prevSelectedWidgets,
+        [categoryId]: updatedWidgets,
+      }));
     });
+
     handleCloseDrawer();
   };
-  
+  // initialize the selectedWidgets state when the tab  changes
+
   useEffect(() => {
-    const initialSelectedWidgets: { [key: string]: boolean } = {};
-    categories[value].widgets.forEach((widget) => {
-      initialSelectedWidgets[widget.id] = widget.visible;
-    });
-    setSelectedWidgets(initialSelectedWidgets);
+    const currentCategoryId = categories[value].id;
+    if (!selectedWidgets[currentCategoryId]) {
+      const initialSelectedWidgets: { [key: string]: boolean } = {};
+      categories[value].widgets.forEach((widget) => {
+        initialSelectedWidgets[widget.id] = widget.visible;
+      });
+      setSelectedWidgets((prevSelectedWidgets) => ({
+        ...prevSelectedWidgets,
+        [currentCategoryId]: initialSelectedWidgets,
+      }));
+    }
   }, [value, categories]);
 
   return (
@@ -88,6 +119,8 @@ const WidgetDrawer = (props: Props) => {
               onChange={handleChange}
               aria-label="widget categories"
             >
+              {/* Render tabs for each category */}
+
               {categories.map((category, index) => (
                 <Tab
                   className={styles.categoryLabel}
@@ -107,13 +140,24 @@ const WidgetDrawer = (props: Props) => {
                   disableRipple
                   disableGutters
                   onClick={() =>
-                    handleCheckboxChange(widget.id, !selectedWidgets[widget.id])
+                    handleCheckboxChange(
+                      categories[value].id,
+                      widget.id,
+                      !selectedWidgets[categories[value].id]?.[widget.id]
+                    )
                   }
                 >
                   <Checkbox
-                    checked={selectedWidgets[widget.id] || false}
+                    checked={
+                      selectedWidgets[categories[value].id]?.[widget.id] ||
+                      false
+                    }
                     onChange={(e) =>
-                      handleCheckboxChange(widget.id, e.target.checked)
+                      handleCheckboxChange(
+                        categories[value].id,
+                        widget.id,
+                        e.target.checked
+                      )
                     }
                   />
                   <Typography>{widget.name}</Typography>
@@ -123,6 +167,8 @@ const WidgetDrawer = (props: Props) => {
           </List>
         </Box>
         <div className={styles.btnGroup}>
+          {/* cancel button to close the drawer without saving changes */}
+
           <Button
             variant="outlined"
             className={styles.close}
@@ -131,10 +177,12 @@ const WidgetDrawer = (props: Props) => {
           >
             Cancel
           </Button>
+          {/* confirm button to save the selected widgets and close the drawer */}
+
           <Button
             variant="contained"
             className={styles.confirm}
-            onClick={() => handleConfirmVisibility(categories[value].id)}
+            onClick={handleConfirmVisibility}
             sx={{ marginTop: 2 }}
           >
             Confirm
