@@ -1,34 +1,42 @@
 .layout {
   display: flex;
+
   .toolbar {
     background-color: #fff;
-    color: #14147d;
     min-height: 3.4rem;
     font-weight: 600 !important;
-    .head{
-      display: flex;align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    .head {
+      display: flex;
+      align-items: center;
       font-weight: 600;
-      span{
-        display: flex;align-items: center;
-        color: #c0cddb;
+      color: #14147d;
+
+      span {
+        display: flex;
+        align-items: center;
+        color: #aabecd;
       }
+    }
+    svg {
+      color: #aabecd;
     }
   }
   .searchContainer {
     .searchField {
       width: 500px;
       background-color: #f0f5fa;
-      color: #c0cddb;
-      border: 1px solid #c0cddb;
+      color: #aabecd;
+      border: 1px solid #aabecd;
       border-radius: 0.5rem;
     }
   }
-  .children{
+  .children {
     padding: 2rem 3rem;
-    background-color: #F0F5FA;
+    background-color: #f0f5fa;
     width: 100%;
     height: 100%;
     min-height: 100vh;
   }
-
 }

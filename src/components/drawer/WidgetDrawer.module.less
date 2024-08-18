@@ -51,4 +51,23 @@
       }
     }
   }
+  .btnGroup {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    .confirm {
+      text-transform: capitalize;
+      padding: 0.3rem 1.9rem;
+      background-color: #14147d;
+    }
+    .close {
+      border: 1px solid #14147d;
+      color: #14147d;
+      background-color: #fff !important;
+      .confirm();
+    }
+  }
 }

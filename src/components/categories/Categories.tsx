@@ -6,27 +6,27 @@ import styles from "./Categories.module.less";
 type Props = {
   category: Category;
   onAddWidget: () => void;
+  searchQuery: string;
 };
 
-const Categories = ({ category, onAddWidget }: Props) => {
-  console.log(category, "categ");
-  // const filteredWidgets = category.widgets.filter(
-  //   (widget) =>
-  //     widget.visible &&
-  //     widget.name.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+const Categories = ({ category, onAddWidget, searchQuery }: Props) => {
+  const filteredWidgets = category.widgets.filter(
+    (widget) =>
+      widget.visible &&
+      widget.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className={styles.categoryContainer}>
       <Typography className={styles.categoryName}>{category.name}</Typography>
       <Grid container className={styles.widgets}>
-        {category.widgets.map((widget) =>
-          widget.visible ? (
-            <Grid item key={widget.id} md={4} xs={12} sm={6} px={1}>
-              <WidgetCard widget={widget} categoryId={category.id} />
-            </Grid>
-          ) : null
-        )}
+        {filteredWidgets.length > 0
+          ? filteredWidgets.map((widget) => (
+              <Grid item key={widget.id} md={4} xs={12} sm={6} px={1}>
+                <WidgetCard widget={widget} categoryId={category.id} />
+              </Grid>
+            ))
+          : null}
         <Grid item md={4} xs={12} sm={6} px={1}>
           <Card className={styles.addWidgetCard} variant="outlined">
             <CardContent className={styles.cardContent}>

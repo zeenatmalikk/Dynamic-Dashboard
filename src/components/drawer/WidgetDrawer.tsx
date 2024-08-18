@@ -22,16 +22,17 @@ type Props = {
   drawerCategoryIndex: number;
 };
 const WidgetDrawer = (props: Props) => {
+  const dispatch = useDispatch();
+  const categories = useSelector(
+    (state: RootState) => state.widgets.categories
+  );
   const { openDrawer, handleCloseDrawer, drawerCategoryIndex } = props;
   const [value, setValue] = useState(0);
   const [selectedWidgets, setSelectedWidgets] = useState<{
     [key: string]: boolean;
   }>({});
 
-  const dispatch = useDispatch();
-  const categories = useSelector(
-    (state: RootState) => state.widgets.categories
-  );
+
   const handleCheckboxChange = (widgetId: string, checked: boolean) => {
     setSelectedWidgets((prevSelectedWidgets) => ({
       ...prevSelectedWidgets,
@@ -58,7 +59,9 @@ const WidgetDrawer = (props: Props) => {
         dispatch(toggleWidgetVisibility({ categoryId, widgetId }));
       }
     });
+    handleCloseDrawer();
   };
+  
   useEffect(() => {
     const initialSelectedWidgets: { [key: string]: boolean } = {};
     categories[value].widgets.forEach((widget) => {
@@ -119,13 +122,24 @@ const WidgetDrawer = (props: Props) => {
             ))}
           </List>
         </Box>
-        <Button
-          variant="contained"
-          onClick={() => handleConfirmVisibility(categories[value].id)}
-          sx={{ marginTop: 2 }}
-        >
-          Confirm
-        </Button>
+        <div className={styles.btnGroup}>
+          <Button
+            variant="outlined"
+            className={styles.close}
+            onClick={handleCloseDrawer}
+            sx={{ marginTop: 2 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            className={styles.confirm}
+            onClick={() => handleConfirmVisibility(categories[value].id)}
+            sx={{ marginTop: 2 }}
+          >
+            Confirm
+          </Button>
+        </div>
       </div>
     </Drawer>
   );
