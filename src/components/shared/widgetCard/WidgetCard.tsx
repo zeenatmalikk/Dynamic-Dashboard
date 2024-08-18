@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography } from "@mui/material";
 import { Widgets } from "../../../types/types";
 import styles from "./WidgetCard.module.less";
-import { Cancel, Close } from "@mui/icons-material";
+import { BarChart, Cancel, Close } from "@mui/icons-material";
 import { removeWidget } from "../../../store/WidgetSlice";
 import { useDispatch } from "react-redux";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
@@ -36,14 +36,26 @@ const WidgetCard = (props: Props) => {
           className={styles.remove}
           onClick={() => handleRemoveWidget(categoryId, widget.id)}
         />
-        <div className={widget.type !== "chart" ? styles.noChartContainer : ""}>
+        <div
+          className={
+            widget.type !== "chart"
+              ? styles.noChartContainer
+              : styles.chartContainer
+          }
+        >
           <Typography variant="body1" className={styles.widgetName}>
             {widget.name}
           </Typography>
-          <Typography variant="body2" className={styles.widgetDesc}>
-            {widget.text}
-          </Typography>
-        </div>{" "}
+          {widget.type !== "chart" && (
+            <div className={styles.descContainer}>
+              <BarChart className={styles.barChart} />
+              <Typography variant="body2" className={styles.widgetDesc}>
+                No Graph data available!
+              </Typography>
+            </div>
+          )}
+        </div>
+
         {widget.type === "chart" && widget.chartType === "pie" && (
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
@@ -69,7 +81,7 @@ const WidgetCard = (props: Props) => {
                 verticalAlign="middle"
                 align="right"
                 layout="vertical"
-                iconType={'rect'}
+                iconType={"rect"}
                 formatter={renderLegendText}
               />
             </PieChart>

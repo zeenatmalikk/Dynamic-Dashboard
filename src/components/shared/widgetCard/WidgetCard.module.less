@@ -7,11 +7,28 @@
   .cardContent {
     .noChartContainer{
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
-      height: 200px; /* or adjust to your needs */
-      text-align: center;
+      justify-content: flex-start;
+      // align-items: center;
+      .descContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex-grow: 1; 
+        height: 170px;
+        .barChart{
+          font-size: 2.5rem;
+          color: #AABECD;
+        }
+        .widgetDesc{
+          text-align: center;
+          font-weight: 600;
+          color: #333;
+          opacity: 0.8;
+        }
+      }
+      
     }
     .remove {
       position: absolute;
@@ -22,9 +39,8 @@
     }
     .widgetName{
       font-weight: 600;
+      margin-bottom: auto;
     }
-    .widgetDesc{
-      font-weight: 400;
-    }
+
   }
 }

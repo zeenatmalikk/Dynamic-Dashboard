@@ -1,9 +1,15 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Typography, Menu, MenuItem, Divider } from "@mui/material";
 import styles from "./Dashboard.module.less";
-import { AccessTime, Loop, MoreVert } from "@mui/icons-material";
+import {
+  ArrowDropDown,
+  Loop,
+  MoreVert,
+  AccessTime,
+  AccessTimeFilled
+} from "@mui/icons-material";
 import Categories from "../../components/categories/Categories";
 import { useState } from "react";
-import WidgetDrawer from "../../components/drawer/WidgetDrawer";
+  import WidgetDrawer from "../../components/drawer/WidgetDrawer";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 type Props = {
@@ -24,6 +30,15 @@ const Dashboard = ({ searchQuery }: Props) => {
   const categories = useSelector(
     (state: RootState) => state.widgets.categories
   );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const filteredCategories = categories.filter((category) => {
     if (searchQuery) {
       // Show category if it has at least one visible widget matching the search query
@@ -55,10 +70,24 @@ const Dashboard = ({ searchQuery }: Props) => {
           <Button className={styles.iconBtn}>
             <MoreVert />
           </Button>
-          <Button className={styles.iconBtn}>
-            <AccessTime/>
-            Last 2 days
+          <Button
+            variant="outlined"
+            startIcon={<AccessTimeFilled className={styles.clock}/>}
+            endIcon={<ArrowDropDown/>}
+            onClick={handleClick}
+            className={styles.dropdown}
+          >
+           <Divider orientation="vertical" flexItem className={styles.divider}/> Last 2 days
           </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Last 7 days</MenuItem>
+            <MenuItem onClick={handleClose}>Last 14 days</MenuItem>
+            <MenuItem onClick={handleClose}>Last 30 days</MenuItem>
+          </Menu>
         </div>
       </header>
       {filteredCategories.length > 0 ? (
@@ -67,6 +96,7 @@ const Dashboard = ({ searchQuery }: Props) => {
             key={category.id}
             category={category}
             onAddWidget={() => handleAddWidget(index)}
+            searchQuery={searchQuery}
           />
         ))
       ) : (
