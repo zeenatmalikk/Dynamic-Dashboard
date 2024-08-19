@@ -39,6 +39,7 @@ const WidgetDrawer = (props: Props) => {
     widgetId: string,
     checked: boolean
   ) => {
+
     setSelectedWidgets((prevSelectedWidgets) => ({
       ...prevSelectedWidgets,
       [categoryId]: {
@@ -76,7 +77,9 @@ const WidgetDrawer = (props: Props) => {
 
   const handleCancel = () => {
     // Reset selectedWidgets state to reflect the visibility in Redux
-    const initialSelectedWidgets: { [categoryId: string]: { [widgetId: string]: boolean } } = {};
+    const initialSelectedWidgets: {
+      [categoryId: string]: { [widgetId: string]: boolean };
+    } = {};
 
     categories.forEach((category) => {
       const categoryId = category.id;
@@ -91,38 +94,25 @@ const WidgetDrawer = (props: Props) => {
     handleCloseDrawer();
   };
 
- useEffect(() => {
-  if (openDrawer) {
-    const currentCategoryId = categories[value]?.id;
+  useEffect(() => {
+    if (openDrawer) {
+      // Initialize `selectedWidgets` state when the drawer opens
+      const initialSelectedWidgets: {
+        [categoryId: string]: { [widgetId: string]: boolean };
+      } = {};
 
-    // Check if `selectedWidgets` already has state for the current category
-    if (currentCategoryId && !selectedWidgets[currentCategoryId]) {
-      // Initialize `selectedWidgets` for the current category
-      const initialSelectedWidgets: { [key: string]: boolean } = {};
-      categories[value]?.widgets.forEach((widget) => {
-        // Set the initial state to match the visibility of the widgets
-        initialSelectedWidgets[widget.id] = widget.visible;
+      categories.forEach((category) => {
+        const categoryId = category.id;
+        const widgetsVisibility: { [widgetId: string]: boolean } = {};
+        category.widgets.forEach((widget) => {
+          widgetsVisibility[widget.id] = widget.visible;
+        });
+        initialSelectedWidgets[categoryId] = widgetsVisibility;
       });
 
-      setSelectedWidgets((prevSelectedWidgets) => ({
-        ...prevSelectedWidgets,
-        [currentCategoryId]: initialSelectedWidgets,
-      }));
-    } else if (currentCategoryId) {
-      // If `selectedWidgets` already has state for the current category, ensure it matches the visibility
-      const updatedSelectedWidgets = { ...selectedWidgets };
-      categories[value]?.widgets.forEach((widget) => {
-        if (!updatedSelectedWidgets[currentCategoryId]) {
-          updatedSelectedWidgets[currentCategoryId] = {};
-        }
-        updatedSelectedWidgets[currentCategoryId][widget.id] = widget.visible;
-      });
-
-      setSelectedWidgets(updatedSelectedWidgets);
+      setSelectedWidgets(initialSelectedWidgets);
     }
-  }
-}, [openDrawer, value, categories]);
-
+  }, [openDrawer, categories]);
 
   return (
     <Drawer anchor={"right"} open={openDrawer} onClose={handleCloseDrawer}>
@@ -170,7 +160,8 @@ const WidgetDrawer = (props: Props) => {
                 >
                   <Checkbox
                     checked={
-                      selectedWidgets[categories[value].id]?.[widget.id] || false
+                      selectedWidgets[categories[value].id]?.[widget.id] ||
+                      false
                     }
                     onChange={(e) =>
                       handleCheckboxChange(
