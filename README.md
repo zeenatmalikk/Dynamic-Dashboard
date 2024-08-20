@@ -3,10 +3,11 @@
 # Steps to run app locally:
 
 1. git clone <[repository-url](https://github.com/zeenatmalikk/Dynamic-Dashboard.git)>
-2. cd <Dynamic-Dashboard>
-3. Install all the required dependencies using npm or yarn: npm install / yarn install
-4. Start the Vite development server to run your app locally: npm run dev / yarn dev
-5. Once the development server is running, open your browser and navigate to: http://localhost:5173
+2. Up-to-date branch: master
+3. cd <Dynamic-Dashboard>
+4. Install all the required dependencies using npm or yarn: npm install / yarn install
+5. Start the Vite development server to run your app locally: npm run dev / yarn dev
+6. Once the development server is running, open your browser and navigate to: http://localhost:5173
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
