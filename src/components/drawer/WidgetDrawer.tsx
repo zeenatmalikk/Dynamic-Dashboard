@@ -76,7 +76,7 @@ const WidgetDrawer = (props: Props) => {
   };
 
   const handleCancel = () => {
-    // Reset selectedWidgets state to reflect the visibility in Redux
+    // reset selectedWidgets state to reflect the visibility in Redux
     const initialSelectedWidgets: {
       [categoryId: string]: { [widgetId: string]: boolean };
     } = {};
@@ -96,7 +96,7 @@ const WidgetDrawer = (props: Props) => {
 
   useEffect(() => {
     if (openDrawer) {
-      // Initialize `selectedWidgets` state when the drawer opens
+      // initialize selectedWidgets state when the drawer opens
       const initialSelectedWidgets: {
         [categoryId: string]: { [widgetId: string]: boolean };
       } = {};

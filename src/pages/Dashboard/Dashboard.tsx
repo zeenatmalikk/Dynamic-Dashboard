@@ -66,13 +66,16 @@ const Dashboard = ({ searchQuery }: Props) => {
           >
             Add Widget +
           </Button>{" "}
-          {/* Static Buttons */}
-          <Button className={styles.iconBtn}>
+          {/* Refresh Button */}
+          <Button className={styles.iconBtn} onClick={()=>window.location.reload()}>
             <Loop />
           </Button>
+          {/* Static Button */}
           <Button className={styles.iconBtn}>
             <MoreVert />
           </Button>
+          {/* Static Button */}
+
           <Button
             variant="outlined"
             startIcon={<AccessTimeFilled className={styles.clock} />}

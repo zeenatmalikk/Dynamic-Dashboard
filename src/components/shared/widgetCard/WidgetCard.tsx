@@ -1,10 +1,20 @@
-import { Card, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  Popover,
+  Typography,
+} from "@mui/material";
 import { Widgets } from "../../../types/types";
 import styles from "./WidgetCard.module.less";
-import { BarChart, Cancel, Close } from "@mui/icons-material";
+import { BarChart, Delete, MoreVert } from "@mui/icons-material";
 import { removeWidget } from "../../../store/WidgetSlice";
 import { useDispatch } from "react-redux";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { useState } from "react";
 type Props = {
   widget: Widgets;
   categoryId: string;
@@ -12,6 +22,8 @@ type Props = {
 
 const WidgetCard = (props: Props) => {
   const { widget, categoryId } = props;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   console.log(widget, "widget");
   // colors used for the segments in the pie chart
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -35,15 +47,52 @@ const WidgetCard = (props: Props) => {
     return `${name} (${value !== undefined ? value : 0})`;
   };
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "widget-action-popover" : undefined;
+
   return (
     <Card className={styles.widgetCard} variant="outlined">
       <CardContent className={styles.cardContent}>
         {/* button to remove the widget */}
 
-        <Cancel
-          className={styles.remove}
-          onClick={() => handleRemoveWidget(categoryId, widget.id)}
-        />
+        <div className={styles.remove}>
+          <IconButton onClick={handleClick} size="small">
+            <MoreVert />
+          </IconButton>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+          >
+            <List>
+              <ListItem
+                onClick={() => handleRemoveWidget(categoryId, widget.id)}
+              >
+                <ListItemButton
+                  className={styles.removeBtn}
+                  disableRipple
+                  disableTouchRipple
+                  sx={{color:'red',fontWeight:600,padding:'0.5rem 1rem'}}
+                >
+               <Delete/>   Delete
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Popover>
+        </div>
         <div
           className={
             widget.type !== "chart"
@@ -74,11 +123,11 @@ const WidgetCard = (props: Props) => {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                innerRadius={40} // Optional: to create a donut chart effect
+                innerRadius={40} 
                 fill="#8884d8"
                 dataKey="value"
                 labelLine={false}
-                label={false} // Disable labels completely
+                label={false} 
               >
                 {widget?.chartData?.map((entry, index) => (
                   <Cell
